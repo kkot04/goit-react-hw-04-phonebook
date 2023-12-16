@@ -1,0 +1,24 @@
+.input {
+    width: 200px;
+    height: 30px;
+    background-color: rgb(210, 224, 236);
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 30px auto 0 auto;
+    display: flex;
+    border-radius: 10px;
+}
+  
+  .button {
+    padding: 20px ;
+    width: 120px;
+    height: 45px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    background-color: rgb(210, 224, 236);
+    border-radius: 10px;
+  }
+  
