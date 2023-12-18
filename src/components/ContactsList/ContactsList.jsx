@@ -1,25 +1,33 @@
 import React from 'react';
-import s from './ContactsList.module.css';
+import { ContactsItem } from '../ContactsItem/ContactsItem.jsx';
+import s from './ContactsList.module.css'
 
-export const ContactsList = ({ contactFilter, deleteContact }) => {
+export const ContactsList = ({
+  contacts,
+  getFilteredData,
+  children,
+  deleteContact,
+}) => {
+  const filteredContacts = getFilteredData(contacts);
+
   return (
-    <ul className={s.contactsList}>
-      {contactFilter().map(({ id, name, number }) => {
-        return (
-          <li className={s.contactItem} key={id}>
-            <p className={s.contactText}>
-              <b> {name} </b>: <i> {number}</i>
-            </p>
-            <button
-              type="button"
-              className={s.deleteBtn}
-              onClick={() => deleteContact(id)}
-            >
-              Delete
-            </button>
-          </li>
-        );
-      })}
-    </ul>
+    <>
+      {children}
+      {filteredContacts.length === 0 ? (
+        <p className={s.errorMessage}>No contacts match your search</p>
+      ) : (
+        <ul className={s.contactList}>
+          {filteredContacts.map(({ id, name, number }) => (
+            <ContactsItem
+              key={id}
+              id={id}
+              name={name}
+              number={number}
+              deleteContact={deleteContact}
+            />
+          ))}
+        </ul>
+      )}
+    </>
   );
 };

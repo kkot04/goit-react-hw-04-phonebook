@@ -1,67 +1,65 @@
-import React from 'react';
-import { Component } from 'react';
+import { useState } from 'react';
+import { nanoid } from 'nanoid';
 import s from './ContactsForm.module.css';
 
-export class ContactsForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+export const ContactsForm = ({ contacts, newContactState }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-
-  handleSubmit = event => {
-    event.preventDefault();
-    if (this.state.name && this.state.number) {
-      if (this.props.checkName(this.state.name)) {
-        alert(`${this.state.name} is already in contacts`);
-      } else {
-        this.props.addNewContact(this.state);
-        this.reset();
-      }
+  const handleValueChange = event => {
+    const { name, value } = event.currentTarget;
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'number':
+        setNumber(value);
+        break;
+      default:
+        return;
     }
   };
 
-  reset = () => {
-    this.setState({
-      name: '',
-      number: '',
-    });
+  const createContact = event => {
+    event.preventDefault();
+
+    const newContact = { name, number, id: nanoid() };
+
+    if (contacts.some(contact => contact.name === name)) {
+      alert(`Contact with the name ${name} already exists!`);
+      return;
+    }
+
+    newContactState(newContact);
+
+    setName('');
+    setNumber('');
   };
 
-  render() {
-    return (
-      <form autoComplete="off" onSubmit={this.handleSubmit}>
-        <label htmlFor="name">
-          <input
-            className={s.input}
-            value={this.state.name}
-            onChange={this.handleChange}
-            type="text"
-            name="name"
-            placeholder="Name"
-            maxLength="16"
-            required
-          />
-        </label>
-        <label htmlFor="number">
-          <input
-            className={s.input}
-            value={this.state.number}
-            onChange={this.handleChange}
-            type="tel"
-            name="number"
-            placeholder="Phone number"
-            required
-            maxLength="10"
-          />
-        </label>
-        <button type="submit" className={s.button}>
-          Add contact
-        </button>
-      </form>
-    );
-  }
-}
+  return (
+    <form className={s.formBox} autoComplete="off" onSubmit={createContact}>
+      <input
+        className={s.input}
+        value={name}
+        onChange={handleValueChange}
+        type="text"
+        name="name"
+        placeholder="Contact name"
+      />
+
+      <input
+        className={s.input}
+        onChange={handleValueChange}
+        value={number}
+        type="tel"
+        name="number"
+        placeholder="Phone number"
+        required
+      />
+
+      <button className={s.button} type="submit">
+        Add contact
+      </button>
+    </form>
+  );
+};
