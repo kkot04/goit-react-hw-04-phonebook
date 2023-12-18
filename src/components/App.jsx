@@ -1,17 +1,39 @@
-import React, { Component } from 'react';
+import {useState, useEffect} from 'react';
 import { nanoid } from 'nanoid';
 import { ContactsForm } from './ContactsForm/ContactsForm';
 import { Section } from './Section/Section';
 import { Filter } from './Filter/Filter';
 import { ContactsList } from './ContactsList/ContactsList';
 
-export class App extends Component {
-  state = {
-    contacts: [],
+export const App = () =>{
+  const[contacts, setContacts] = useState ( 
+    JSON.parse(localStorage.getItem('contacts')) ?? [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ]
+  ); 
+  const [filter, setFilter] = useState('')
 
-    filter: '',
-  };
-  //LS
+  useEffect(() => {
+    window.localStorage.setItem('contacts', JSON.stringify(contacts))
+  }, [contacts])
+  
+  const deleteContact = id => {
+      setContacts(prevState => prevState.filter(contact => contact.id !== id));
+    };
+
+  const addNewContact = contactProps => {
+      setState(prev => ({
+        contacts: [...prev.contacts, { id: nanoid(), ...contactProps }],
+      }));
+    };
+
+  const  handleFilter = event => {
+      setState({ filter: event.target.value });
+    };
+
   componentDidMount() {
     const contacts = JSON.parse(window.localStorage.getItem('contacts'));
     if (contacts?.length) {
@@ -28,17 +50,9 @@ export class App extends Component {
     }
   }
   //LS
-  addNewContact = contactProps => {
-    this.setState(prev => ({
-      contacts: [...prev.contacts, { id: nanoid(), ...contactProps }],
-    }));
-  };
 
-  deleteContact = id => {
-    this.setState(prev => ({
-      contacts: prev.contacts.filter(contact => contact.id !== id),
-    }));
-  };
+
+
 
   checkName = name => {
     return this.state.contacts.some(contact => {
@@ -46,9 +60,7 @@ export class App extends Component {
     });
   };
 
-  handleFilter = event => {
-    this.setState({ filter: event.target.value });
-  };
+
 
   contactFilter = () => {
     return this.state.contacts.filter(contact =>
